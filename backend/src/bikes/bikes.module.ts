@@ -6,7 +6,7 @@ import { BikesService } from "./bikes.service";
 import { BikeEntity } from "./entities/bike.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BikeEntity])],
+  imports: [TypeOrmModule.forFeature([BikeEntity]), BikeEntity],
   controllers: [BikesController],
   providers: [BikesService, BikesRepository],
 })
