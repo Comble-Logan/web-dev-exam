@@ -8,12 +8,13 @@ import type {
 export const useCustomersProvider = () => {
   const [customers, setCustomers] = useState<CustomerModel[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [totalCount, setTotalCount] = useState<number>(0);
 
-  const load = () => {
+  const load = (page: number = 1, limit: number = 10) => {
     setIsLoading(true);
     axios
-      .get("http://localhost:3000/customers")
-      .then((result) => setCustomers(result.data))
+      .get(`http://localhost:3000/customers?page=${page}&limit=${limit}`)
+      .then((result) => {setCustomers(result.data.customers); setTotalCount(result.data.totalCount);})
       .finally(() => {
         setIsLoading(false);
       });
@@ -40,5 +41,5 @@ export const useCustomersProvider = () => {
         );
       });
 
-  return { customers, load, isLoading, deleteCustomer, createCustomer };
+  return { customers, load, isLoading, deleteCustomer, createCustomer, totalCount };
 };

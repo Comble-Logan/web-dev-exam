@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query
 } from "@nestjs/common";
 import { CustomersService } from "./customers.service";
 import {
@@ -23,6 +24,7 @@ import type {
   CreateCustomerModel,
   UpdateCustomerModel,
 } from "./models/customer.model";
+import { GetCustomerDto} from "./dto/get-customer.dto";
 
 @Controller("customers")
 export class CustomersController {
@@ -31,11 +33,14 @@ export class CustomersController {
   ) {}
 
   @Get()
-  async findAll(): Promise<CustomerResponseDto[]> {
-    return (await this.service.findAll()).map((model) =>
-      CustomerResponseDto.fromModel(model),
-    );
-  }
+  async findAll(
+    @Query() query: GetCustomerDto): Promise<{totalCount: number; customers: CustomerResponseDto[]}> {
+    const result = await this.service.findAll(query.page, query.limit);
+    return {
+      totalCount: result.totalCount,
+      customers: result.customers.map((model) => CustomerResponseDto.fromModel(model),
+      )};
+}
 
   @Post()
   async create(@Body() dto: CreateCustomerDto): Promise<CustomerResponseDto> {
